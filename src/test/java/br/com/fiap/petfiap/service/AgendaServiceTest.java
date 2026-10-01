@@ -110,4 +110,20 @@ public class AgendaServiceTest {
         // Act + Assert
         assertThrows(AtendimentoNaoEncontradoException.class, () -> service.buscarPorId(99L));
     }
+
+    @Test
+    public void deveRecusarAgendamentoNoPassadoSemConsultarBanco() {
+        Banho passado = new Banho(
+                10,
+                "Rex",
+                "PEQUENO",
+                "Ana",
+                LocalDateTime.now().minusDays(1).withNano(0)
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> service.agendar(passado));
+
+        verify(repository, never()).findByPetNome(any());
+        verify(repository, never()).save(any());
+    }
 }
