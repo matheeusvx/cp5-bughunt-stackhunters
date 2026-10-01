@@ -126,4 +126,17 @@ public class AgendaServiceTest {
         verify(repository, never()).findByPetNome(any());
         verify(repository, never()).save(any());
     }
+
+    @Test
+    public void deveCancelarAtendimentoAgendado() {
+        Banho agendado = banhoDoRexAmanha10h();
+
+        when(repository.findById(1L)).thenReturn(Optional.of(agendado));
+        when(repository.save(agendado)).thenReturn(agendado);
+
+        Atendimento cancelado = service.cancelar(1L);
+
+        assertEquals("CANCELADO", cancelado.getStatus());
+        verify(repository).save(agendado);
+    }
 }
